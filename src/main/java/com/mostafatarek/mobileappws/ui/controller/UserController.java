@@ -3,6 +3,8 @@ package com.mostafatarek.mobileappws.ui.controller;
 import com.mostafatarek.mobileappws.ui.model.request.UpdateUserDetailsRequestModel;
 import com.mostafatarek.mobileappws.ui.model.request.UserDetailsRequestModel;
 import com.mostafatarek.mobileappws.ui.model.response.UserRest;
+import com.mostafatarek.mobileappws.userServicesImpl.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,9 @@ import java.util.UUID;
 @RequestMapping("users")
 public class UserController {
     Map<String, UserRest> users;
+
+    @Autowired
+    UserService userService;
 
     @GetMapping()
     public String getUser(@RequestParam(value = "page", defaultValue = "1") int page, @RequestParam(value = "size") int size,
@@ -37,17 +42,7 @@ public class UserController {
 
     @PostMapping(consumes = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity createUser(@Valid @RequestBody UserDetailsRequestModel userDetails) {
-
-        UserRest returnedValue = new UserRest();
-        returnedValue.setEmail(userDetails.getEmail());
-        returnedValue.setFirstName(userDetails.getFirstName());
-        returnedValue.setLastName(userDetails.getLastName());
-
-        if (users == null) users = new HashMap<>();
-        String userId = UUID.randomUUID().toString();
-        returnedValue.setUserId(userId);
-        users.put(userId, returnedValue);
-
+        UserRest returnedValue = userService.createUser(userDetails);
         return new ResponseEntity(returnedValue, HttpStatus.OK);
     }
 
@@ -58,7 +53,7 @@ public class UserController {
         storedUserDetails.setLastName(userDetails.getLastName());
 
         users.put(userId, storedUserDetails);
-        
+
         return new ResponseEntity(storedUserDetails, HttpStatus.OK);
     }
 
