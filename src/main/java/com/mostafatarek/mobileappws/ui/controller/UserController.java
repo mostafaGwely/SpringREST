@@ -1,5 +1,6 @@
 package com.mostafatarek.mobileappws.ui.controller;
 
+import com.mostafatarek.mobileappws.ui.model.request.UserDetailsRequestModel;
 import com.mostafatarek.mobileappws.ui.model.response.UserRest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -31,9 +32,14 @@ public class UserController {
         return "update user was called";
     }
 
-    @PostMapping
-    public String createUser() {
-        return "create user was called";
+    @PostMapping( consumes = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity createUser(@RequestBody UserDetailsRequestModel userDetails) {
+
+        UserRest returnedValue = new UserRest();
+        returnedValue.setEmail(userDetails.getEmail());
+        returnedValue.setFirstName(userDetails.getFirstName());
+        returnedValue.setLastName(userDetails.getLastName());
+        return new ResponseEntity(returnedValue, HttpStatus.OK);
     }
 
     @DeleteMapping
