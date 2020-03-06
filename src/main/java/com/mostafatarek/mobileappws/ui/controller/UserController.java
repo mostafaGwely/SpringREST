@@ -8,6 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.print.attribute.ResolutionSyntax;
 import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
@@ -62,8 +63,9 @@ public class UserController {
     }
 
 
-    @DeleteMapping
-    public String deleteUser() {
-        return "delete user was called";
+    @DeleteMapping(path = "/{userId}")
+    public ResponseEntity deleteUser(@PathVariable String userId) {
+        users.remove(userId);
+        return ResponseEntity.noContent().build();
     }
 }
